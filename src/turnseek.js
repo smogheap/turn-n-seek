@@ -276,11 +276,12 @@ function mousedown(e) {
 //	console.log(TS.move.offsetX, TS.move.offsetY);
 }
 function mousemove(e) {
-	e.preventDefault();
 	var now = new Date();
 	if(null === TS.move.ring || now - TS.move.lastMove < 16) {
 		return;
 	}
+	e.preventDefault();
+	console.log(now - TS.move.lastMove);
 	if(e.changedTouches && e.changedTouches.length) {
 		e = e.changedTouches[0];
 	}
