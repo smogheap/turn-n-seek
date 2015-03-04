@@ -57,7 +57,7 @@ requestAnimationFrame = requestAnimationFrame || function(cb) {
 };
 
 function init() {
-	var rings = Math.floor(Math.random() * 4) + 2;
+	var rings = Math.floor(Math.random() * 2) + 2;
 	var segments = 0;
 	var ring = null;
 	var pool = [];
