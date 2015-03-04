@@ -203,6 +203,9 @@ function checkwin() {
 }
 
 function resize() {
+	if(!TS.canvas) {
+		return;
+	}
 	TS.canvas.width = 0;
 	TS.canvas.height = 0;
 
@@ -230,14 +233,14 @@ function resize() {
 
 function mousedown(e) {
 	e.preventDefault();
+	if(e.changedTouches && e.changedTouches.length) {
+		e = e.changedTouches[0];
+	}
+
 	var dx = (e.target.width / 2) - (e.clientX - e.target.offsetLeft);
 	var dy = (e.target.height / 2) - (e.clientY - e.target.offsetTop);
 	var angle = Math.atan2(dx, dy);
 	var radius = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2))
-
-	if(e.changedTouches && e.changedTouches.length) {
-		e = e.changedTouches[0];
-	}
 
 	angle = angle / (Math.PI / -180);
 	if(angle < 0) {
@@ -261,18 +264,19 @@ function mousedown(e) {
 			return true;
 		});
 	}
+//	console.log(TS.move);
 //	console.log(angle, radius);
 //	console.log(TS.move.offsetX, TS.move.offsetY);
 }
 function mousemove(e) {
 	e.preventDefault();
+	if(e.changedTouches && e.changedTouches.length) {
+		e = e.changedTouches[0];
+	}
+
 	var now = new Date();
 	if(null === TS.move.ring || now - TS.move.lastMove < 16) {
 		return;
-	}
-
-	if(e.changedTouches && e.changedTouches.length) {
-		e = e.changedTouches[0];
 	}
 
 	TS.move.lastMove = now;
@@ -307,7 +311,6 @@ function mousemove(e) {
 }
 function mouseup(e) {
 	e.preventDefault();
-
 	if(e.changedTouches && e.changedTouches.length) {
 		e = e.changedTouches[0];
 	}
