@@ -281,7 +281,7 @@ function mousemove(e) {
 		return;
 	}
 	e.preventDefault();
-	console.log(now - TS.move.lastMove);
+//	console.log(now - TS.move.lastMove);
 	if(e.changedTouches && e.changedTouches.length) {
 		e = e.changedTouches[0];
 	}
