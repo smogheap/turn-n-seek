@@ -28,7 +28,8 @@ var TS = {
 				"#fef4da"
 			],
 			rotate: 0,
-			goalRotate: 0
+			goalRotate: 0,
+			canvas: null
 		}
 	],
 	goal: {
@@ -70,19 +71,18 @@ function init() {
 			rotate: Math.floor(Math.random() * 360),
 			goalRotate: Math.floor(Math.random() * 360)
 		};
-		segments = Math.floor(Math.random() * 4) + 2;
+		segments = Math.floor(Math.random() * (TS.colors.length - 1)) + 2;
 		for(var j = 0; j < segments; j++) {
 			ring.segments.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
 		}
 		TS.rings.push(ring);
 	};
-	TS.goal.x = 0.333; //Math.random();
-	TS.goal.y = 0.333; //Math.random();
+	TS.goal.x = Math.random();
+	TS.goal.y = Math.random();
 
 	TS.gameover = false;
 	TS.goalDirty = true;
 	TS.scratchDirty = true;
-	render();
 };
 
 function render(goal) {
@@ -108,21 +108,30 @@ function render(goal) {
 				ctx.rotate(TS.move.offsetAngle * TO_RADIANS);
 			}
 		}
-
-		radius = (TS.canvas.width / 2) * ((rings - r + 1) / (rings + 1));
-		seglength = (360 / ring.segments.length) * TO_RADIANS;
-		ring.segments.every(function(segment, s) {
-			segstart = s * seglength;
-			ctx.fillStyle = segment;
-			ctx.beginPath();
-			ctx.arc(0, 0, radius, segstart, (segstart + seglength) % (Math.PI * 2), false);
-			ctx.arc(0, 0, 0, (segstart + seglength) % (Math.PI * 2), segstart, true);
-			ctx.closePath();
-			ctx.fill();
-			ctx.stroke();
-			return true;
-		});
-
+		if(!ring.canvas) {
+//			console.log("dirty ring " + r);
+			var oldCtx = ctx;
+			ring.canvas = document.createElement("canvas");
+			ring.canvas.width = TS.canvas.width;
+			ring.canvas.height = TS.canvas.height;
+			ctx = ring.canvas.getContext("2d");
+			ctx.translate(pos, pos);
+			radius = (TS.canvas.width / 2) * ((rings - r + 1) / (rings + 1));
+			seglength = (360 / ring.segments.length) * TO_RADIANS;
+			ring.segments.every(function(segment, s) {
+				segstart = s * seglength;
+				ctx.fillStyle = segment;
+				ctx.beginPath();
+				ctx.arc(0, 0, radius, segstart, (segstart + seglength) % (Math.PI * 2), false);
+				ctx.arc(0, 0, 0, (segstart + seglength) % (Math.PI * 2), segstart, true);
+				ctx.closePath();
+				ctx.fill();
+				ctx.stroke();
+				return true;
+			});
+			ctx = oldCtx;
+		}
+		ctx.drawImage(ring.canvas, -pos, -pos);
 		ctx.restore();
 		return true;
 	});
@@ -144,17 +153,17 @@ function render(goal) {
 	ctx.stroke();
 	ctx.restore();
 
-	if((TS.goal.x * TS.canvas.width) - radius < 0) {
-		TS.goal.x = radius / TS.canvas.width;
+	if((TS.goal.x * TS.canvas.width) - radius < 1) {
+		TS.goal.x = (radius + 1) / TS.canvas.width;
 	}
-	if((TS.goal.x * TS.canvas.width) + radius > TS.canvas.width) {
-		TS.goal.x = (TS.canvas.width - radius) / TS.canvas.width;
+	if((TS.goal.x * TS.canvas.width) + radius > TS.canvas.width - 1) {
+		TS.goal.x = (TS.canvas.width - 1 - radius) / TS.canvas.width;
 	}
-	if((TS.goal.y * TS.canvas.height) - radius < 0) {
-		TS.goal.y = radius / TS.canvas.height;
+	if((TS.goal.y * TS.canvas.height) - radius < 1) {
+		TS.goal.y = (radius + 1) / TS.canvas.height;
 	}
-	if((TS.goal.y * TS.canvas.height) + radius > TS.canvas.height) {
-		TS.goal.y = (TS.canvas.height - radius) / TS.canvas.height;
+	if((TS.goal.y * TS.canvas.height) + radius > TS.canvas.height - 1) {
+		TS.goal.y = (TS.canvas.height - 1 - radius) / TS.canvas.height;
 	}
 
 	if(goal === true) {
@@ -206,6 +215,7 @@ function checkwin() {
 		TS.gameover = true;
 		alert("yayy!");
 		init();
+		render();
 	}
 }
 
@@ -234,6 +244,11 @@ function resize() {
 	TS.scratch.height = TS.canvas.height;
 	TS.scratchDirty = true;
 	TS.goalDirty = true;
+	TS.rings.every(function(ring, r) {
+		delete ring.canvas;
+		ring.canvas = null;
+		return true;
+	});
 
 	requestAnimationFrame(render);
 }
