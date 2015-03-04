@@ -270,14 +270,14 @@ function mousedown(e) {
 }
 function mousemove(e) {
 	e.preventDefault();
-	if(e.changedTouches && e.changedTouches.length) {
-		e = e.changedTouches[0];
-	}
-
 	var now = new Date();
 	if(null === TS.move.ring || now - TS.move.lastMove < 16) {
 		return;
 	}
+	if(e.changedTouches && e.changedTouches.length) {
+		e = e.changedTouches[0];
+	}
+
 
 	TS.move.lastMove = now;
 
