@@ -57,6 +57,87 @@ var requestAnimationFrame = (window.requestAnimationFrame ||
 requestAnimationFrame = requestAnimationFrame || function(cb) {
 	setTimeout(cb, 10, new Date());
 };
+var trans = function(str) {
+	var lang = (navigator.language || "en-US").substring(0, 2).toLowerCase();
+	var table = {
+		"ar": {
+			"Victory!": "!النصر"
+		},
+		"cs": {
+			"Victory!": "Vítězství!"
+		},
+		"da": {
+			"Victory!": "Sejr!"
+		},
+		"de": {
+			"Victory!": "Sieg!"
+		},
+		"el": {
+			"Victory!": "Νίκη!"
+		},
+		"en": {
+			"Victory!": "Victory!"
+		},
+		"es": {
+			"Victory!": "¡Victoria!"
+		},
+		"fr": {
+			"Victory!": "Victoire!"
+		},
+		"he": {
+			"Victory!": "!נצחון"
+		},
+		"hi": {
+			"Victory!": "विजय!"
+		},
+		"it": {
+			"Victory!": "Vittoria!"
+		},
+		"ja": {
+			"Victory!": "勝利"
+		},
+		"ko": {
+			"Victory!": "승리!"
+		},
+		"nl": {
+			"Victory!": "Overwinning!"
+		},
+		"no": {
+			"Victory!": "Seier!"
+		},
+		"pl": {
+			"Victory!": "Zwycięstwo!"
+		},
+		"pt": {
+			"Victory!": "Vitória!"
+		},
+		"ro": {
+			"Victory!": "Victorie!"
+		},
+		"ru": {
+			"Victory!": "Победы!"
+		},
+		"sk": {
+			"Victory!": "Víťazstvo!"
+		},
+		"sr": {
+			"Victory!": "Победа!"
+		},
+		"sv": {
+			"Victory!": "Seger!"
+		},
+		"uk": {
+			"Victory!": "Перемоги!"
+		},
+		"yi": {
+			"Victory!": "!זיג"
+		},
+		"zh": {
+			"Victory!": "胜利！"
+		}
+	};
+	return table[lang] ? table[lang][str] : str || str;
+};
 
 function init() {
 	var rings = Math.floor(Math.random() * 2) + 2;
@@ -236,7 +317,7 @@ function checkwin() {
 	});
 	if(allgood) {
 		TS.gameover = true;
-		alert("yayy!");
+		alert(trans("Victory!"));
 		init();
 		render();
 	}
