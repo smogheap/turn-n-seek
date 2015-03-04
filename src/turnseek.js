@@ -3,6 +3,7 @@ var TS = {
 	ctx: null,
 	scratch: null,
 	scratchDirty: true,
+	centerCanvas: null,
 	goal: null,
 	goalDirty: true,
 	colors: [
@@ -81,8 +82,17 @@ function init() {
 	TS.goal.y = Math.random();
 
 	TS.gameover = false;
+
 	TS.goalDirty = true;
 	TS.scratchDirty = true;
+	TS.goalDirty = true;
+	delete TS.centerCanvas;
+	TS.centerCanvas = null;
+	TS.rings.every(function(ring, r) {
+		delete ring.canvas;
+		ring.canvas = null;
+		return true;
+	});
 };
 
 function render(goal) {
@@ -92,6 +102,7 @@ function render(goal) {
 	var seglength = 0;
 	var pos = TS.canvas.width / 2;
 	var ctx = TS.ctx;
+	var oldCtx = null;
 
 	if(goal === true) {
 		ctx = TS.goal.getContext("2d");
@@ -110,7 +121,7 @@ function render(goal) {
 		}
 		if(!ring.canvas) {
 //			console.log("dirty ring " + r);
-			var oldCtx = ctx;
+			oldCtx = ctx;
 			ring.canvas = document.createElement("canvas");
 			ring.canvas.width = TS.canvas.width;
 			ring.canvas.height = TS.canvas.height;
@@ -137,20 +148,31 @@ function render(goal) {
 	});
 
 	// center
-	ctx.save();
 	radius = (TS.canvas.width / 2) * (1 / (rings + 1));
-	TS.goalRadius = radius;
-	ctx.fillStyle = "black";
-	ctx.lineWidth = 8;
-	ctx.strokeStyle = "black";
-	ctx.beginPath();
-	ctx.translate(pos, pos);
-	ctx.arc(0, 0, radius, 0, Math.PI * 2, false);
-	ctx.fill();
-	ctx.stroke();
-	ctx.lineWidth = 4;
-	ctx.strokeStyle = "white";
-	ctx.stroke();
+	if(!TS.centerCanvas) {
+//		console.log("stale center");
+		oldCtx = ctx;
+		TS.centerCanvas = document.createElement("canvas");
+		TS.centerCanvas.width = TS.canvas.width;
+		TS.centerCanvas.height = TS.canvas.height;
+		ctx = TS.centerCanvas.getContext("2d");
+		ctx.translate(pos, pos);
+		TS.goalRadius = radius;
+		ctx.fillStyle = "black";
+		ctx.lineWidth = 8;
+		ctx.strokeStyle = "black";
+//		ctx.translate(pos, pos);
+		ctx.beginPath();
+		ctx.arc(0, 0, radius, 0, Math.PI * 2, false);
+		ctx.fill();
+		ctx.stroke();
+		ctx.lineWidth = 4;
+		ctx.strokeStyle = "white";
+		ctx.stroke();
+		ctx = oldCtx;
+	}
+	ctx.save();
+	ctx.drawImage(TS.centerCanvas, 0, 0);
 	ctx.restore();
 
 	if((TS.goal.x * TS.canvas.width) - radius < 1) {
@@ -176,6 +198,7 @@ function render(goal) {
 		render(true);
 	}
 	if(TS.scratchDirty) {
+		oldCtx = ctx;
 		ctx = TS.scratch.getContext("2d");
 		ctx.drawImage(TS.goal, 0, 0);
 		ctx.save();
@@ -187,15 +210,15 @@ function render(goal) {
 		ctx.fill();
 		ctx.restore();
 		TS.scratchDirty = false;
-		ctx = TS.ctx;
+		ctx = oldCtx;
 	}
-	ctx.save();
+//	ctx.save();
 	ctx.drawImage(TS.scratch,
 				  (TS.goal.x * TS.canvas.width) - radius,
 				  (TS.goal.y * TS.canvas.height) - radius,
 				  radius * 2, radius * 2,
 				  pos - radius, pos - radius, radius * 2, radius * 2);
-	ctx.restore();
+//	ctx.restore();
 }
 
 function checkwin() {
@@ -244,6 +267,8 @@ function resize() {
 	TS.scratch.height = TS.canvas.height;
 	TS.scratchDirty = true;
 	TS.goalDirty = true;
+	delete TS.centerCanvas;
+	TS.centerCanvas = null;
 	TS.rings.every(function(ring, r) {
 		delete ring.canvas;
 		ring.canvas = null;
