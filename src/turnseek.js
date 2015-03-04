@@ -320,6 +320,11 @@ window.addEventListener("load", function() {
 	TS.canvas.addEventListener("mousemove", mousemove);
 	TS.canvas.addEventListener("mouseup", mouseup);
 	TS.canvas.addEventListener("mouseout", mouseup);
+
+	TS.canvas.addEventListener("touchstart", mousedown);
+	TS.canvas.addEventListener("touchmove", mousemove);
+	TS.canvas.addEventListener("touchend", mouseup);
+	TS.canvas.addEventListener("touchcancel", mouseup);
 });
 
 window.addEventListener("resize", resize);
