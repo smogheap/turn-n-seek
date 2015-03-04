@@ -48,6 +48,13 @@ var TS = {
 	gameover: false
 };
 var TO_RADIANS = Math.PI / 180;
+var requestAnimationFrame = (window.requestAnimationFrame ||
+							 window.mozRequestAnimationFrame ||
+							 window.webkitRequestAnimationFrame ||
+							 window.msRequestAnimationFrame);
+requestAnimationFrame = requestAnimationFrame || function(cb) {
+	setTimeout(cb, 10, new Date());
+};
 
 function init() {
 	var rings = Math.floor(Math.random() * 4) + 2;
@@ -86,14 +93,14 @@ function render(goal) {
 	var pos = TS.canvas.width / 2;
 	var ctx = TS.ctx;
 
-	if(goal) {
+	if(goal === true) {
 		ctx = TS.goal.getContext("2d");
 	}
 
 	TS.rings.every(function(ring, r) {
 		ctx.save();
 		ctx.translate(pos, pos);
-		if(goal) {
+		if(goal === true) {
 			ctx.rotate(ring.goalRotate * TO_RADIANS);
 		} else {
 			ctx.rotate(ring.rotate * TO_RADIANS);
@@ -150,7 +157,7 @@ function render(goal) {
 		TS.goal.y = (TS.canvas.height - radius) / TS.canvas.height;
 	}
 
-	if(goal) {
+	if(goal === true) {
 		TS.goalDirty = false;
 		return;
 	}
@@ -228,7 +235,7 @@ function resize() {
 	TS.scratchDirty = true;
 	TS.goalDirty = true;
 
-	render();
+	requestAnimationFrame(render);
 }
 
 function mousedown(e) {
@@ -278,7 +285,6 @@ function mousemove(e) {
 		e = e.changedTouches[0];
 	}
 
-
 	TS.move.lastMove = now;
 
 	var dx = (e.target.width / 2) - (e.clientX - e.target.offsetLeft);
@@ -306,6 +312,7 @@ function mousemove(e) {
 //	console.log(TS.move.offsetX, TS.move.offsetY);
 //	console.log(angle, radius);
 //	console.log(TS.move);
+
 
 	render();
 }
