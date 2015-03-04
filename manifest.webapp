@@ -1,0 +1,28 @@
+{
+	"version": "0.1",
+	"name": "turn & seek",
+	"launch_path": "/index.html",
+	"description": "Turn the dials and seek the solution!!",
+	"icons": {
+ 		"30": "/icon30.png",
+ 		"32": "/icon30.png",
+ 		"36": "/icon36.png",
+ 		"48": "/icon48.png",
+ 		"60": "/icon60.png",
+ 		"64": "/icon64.png",
+ 		"128": "/icon128.png",
+		"256": "/icon256.png",
+		"512": "/icon512.png"
+	},
+	"developer": {
+		"name": "penduinbits",
+		"url": "http://penduin.net"
+	},
+	"installs_allowed_from": [
+		"http://turn-n-seek.penduin.net",
+		"https://turn-n-seek.penduin.net",
+		"https://marketplace.firefox.com"
+	],
+	"default_locale": "en",
+	"appcache_path": "/cache.manifest"
+}
