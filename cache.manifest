@@ -3,4 +3,12 @@ CACHE MANIFEST
 LICENSE
 README
 index.html
+icon256.png
+icon128.png
+icon64.png
+icon60.png
+icon48.png
+icon36.png
+icon32.png
+icon30.png
 src/turnseek.js

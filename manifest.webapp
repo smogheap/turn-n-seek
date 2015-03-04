@@ -2,10 +2,10 @@
 	"version": "0.1",
 	"name": "turn & seek",
 	"launch_path": "/index.html",
-	"description": "Turn the dials and seek the solution!!",
+	"description": "Turn the dials and seek the solution!",
 	"icons": {
  		"30": "/icon30.png",
- 		"32": "/icon30.png",
+ 		"32": "/icon32.png",
  		"36": "/icon36.png",
  		"48": "/icon48.png",
  		"60": "/icon60.png",
